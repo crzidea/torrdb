@@ -1,14 +1,14 @@
 #!/usr/bin/env node
 const client = require('../lib/elasticsearch.js')
-const {index} = require('../lib/defaults.js')
-const location = process.argv[2] || '/tmp/torrent-sniffer/leveldb-bak'
+const defaults = require('../lib/defaults.js')
+const location = process.argv[2] || defaults.leveldb
 
 function bulk(buffer) {
   const body = buffer.reduce((body, torrent) => {
     body.push(
       {
         index: {
-          _index: index,
+          _index: defaults.index,
           _type: 'torrent',
           _id: torrent.infoHash,
         }
@@ -28,7 +28,7 @@ const level = require('level');
 const db = level(location);
 let count = 0
 let buffer = []
-const batch = 1e3
+const batch = 10e3
 //const batch = 10
 const stream = db.createReadStream()
 .on('data', async function(data) {
