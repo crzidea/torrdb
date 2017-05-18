@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 const client = require('../lib/elasticsearch.js')
 const {index} = require('../lib/defaults.js')
-const query = process.argv[2]
+const query = process.argv.slice(2).join(' ')
 if (!query) {
   return
 }
@@ -12,15 +12,16 @@ async function main() {
     body: {
       query: {
         bool: {
-          should: [
+          must: [
             {
-              match: {
+              match_phrase: {
+              //match: {
                 name: query
               }
             },
             {
               match: {
-                extnames: 'mp4 avi mkv rm rmvb'
+                extnames: 'mp4 avi mkv rmvb rm'
               }
             }
           ]
@@ -28,14 +29,15 @@ async function main() {
       }
     }
   })
-  console.log(`${response.hits.hits.length}/${response.hits.total} results for "${query}"`);
   console.log();
   for (const item of response.hits.hits.reverse()) {
-    console.log('--------');
     console.log(item._source.name);
     console.log(item._source.magnet);
     console.log(item._source.extnames);
+    console.log('--------');
   }
+  console.log();
+  console.log(`${response.hits.hits.length}/${response.hits.total} results for "${query}"`);
 }
 
 main().catch((error) => {
