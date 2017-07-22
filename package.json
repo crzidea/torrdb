@@ -11,6 +11,5 @@
     "elasticsearch": "^13.0.0",
     "level": "^1.6.0"
   },
-  "devDependencies": {
-  }
+  "devDependencies": {}
 }
