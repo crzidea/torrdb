@@ -1,0 +1,7 @@
+couchdb:
+    image: couchdb
+    volumes:
+        #- ./etc:/usr/local/etc/couchdb/local.d
+        - ~/.torrdb/couchdb:/usr/local/var/lib/couchdb
+    ports:
+        - "5984:5984"
