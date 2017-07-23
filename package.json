@@ -9,7 +9,7 @@
   "license": "ISC",
   "dependencies": {
     "elasticsearch": "^13.0.0",
-    "level": "^1.6.0"
+    "pouchdb": "^6.3.4"
   },
   "devDependencies": {}
 }
