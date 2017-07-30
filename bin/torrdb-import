@@ -1,16 +1,23 @@
 #!/usr/bin/env node
 const client = require('../lib/elasticsearch.js')
 const defaults = require('../lib/defaults.js')
-const location = process.argv[2] || defaults.leveldb
+const pouchdb = require('pouchdb')
 
-function bulk(buffer) {
-  const body = buffer.reduce((body, torrent) => {
+const db = pouchdb(
+  'http://torrdb.less.center:5984/torrent',
+  {revs_limit: 1}
+);
+
+let count = 0
+
+async function bulk(documents) {
+  const body = documents.reduce((body, torrent) => {
     body.push(
       {
         index: {
           _index: defaults.index,
-          _type: 'torrent',
-          _id: torrent.infoHash,
+          _type:  'torrent',
+          _id:    torrent._id,
         }
       },
       {
@@ -21,44 +28,34 @@ function bulk(buffer) {
     )
     return body
   }, [])
-  return client.bulk({body})
+  const response = await client.bulk({body})
+  count += response.items.length
+  console.log(`${count} documents saved`);
+  return response
 }
 
-const level = require('level');
-const db = level(location);
-let count = 0
-let buffer = []
-const batch = 10e3
-//const batch = 10
-const stream = db.createReadStream()
-.on('data', async function(data) {
-  const value = JSON.parse(data.value);
-  //console.log(data.key, value.name);
-  //console.log(value.magnet);
-  buffer.push({
-    infoHash: data.key,
-    name: value.name,
-    magnet: value.magnet,
-    extnames: value.extnames
-  })
-  count++
-
-  if (0 === count % batch) {
-    stream.pause()
-    const response = await bulk(buffer)
-    console.log(`${response.items.length} documents saved`);
-    buffer = []
-    stream.resume()
-  }
+db.changes({
+  since: 'now',
+  live: true,
+  include_docs: true
+})
+.on('change', async function(change) {
+  await bulk([change.doc])
 })
 .on('error', (error) => {
   console.error(error.stack);
 })
-.on('close', () => {
-  console.log('Stream closed')
-})
-.on('end', () => {
-  console.log('--------')
-  console.log('Stream ended')
-  console.log(`${count} torrents found`);
-})
+
+async function all() {
+  const limit = 10000
+  let since = 0
+  let changes
+  do {
+    changes = await db.changes({since, limit, include_docs: true})
+    since = changes.last_seq
+    const documents = changes.results.map(result => result.doc)
+    await bulk(documents)
+  } while (changes.results.length >= limit);
+}
+
+all()

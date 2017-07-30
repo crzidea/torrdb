@@ -18,10 +18,19 @@ async function main() {
               match: {
                 name: query
               }
-            },
+            }
+          ],
+          filter: [
             {
-              match: {
-                extnames: 'mp4 avi mkv rmvb rm'
+              terms: {
+                extnames: [
+                  'mp4',
+                  'mpg',
+                  'avi',
+                  'mkv',
+                  'rmvb',
+                  'rm'
+                ]
               }
             }
           ]
