@@ -1,50 +1,12 @@
 #!/usr/bin/env node
-const client = require('../lib/elasticsearch.js')
-const defaults = require('../lib/defaults.js')
-const pouchdb = require('pouchdb')
+const defaults  = require('../lib/defaults.js')
+const bulk      = require('../lib/bulk.js')
+const pouchdb   = require('pouchdb')
 
 const db = pouchdb(
   'http://torrdb.less.center:5984/torrent',
   {revs_limit: 1}
 );
-
-let count = 0
-
-async function bulk(documents) {
-  const body = documents.reduce((body, torrent) => {
-    body.push(
-      {
-        index: {
-          _index: defaults.index,
-          _type:  'torrent',
-          _id:    torrent._id,
-        }
-      },
-      {
-        name:     torrent.name,
-        magnet:   torrent.magnet,
-        extnames: torrent.extnames
-      }
-    )
-    return body
-  }, [])
-  const response = await client.bulk({body})
-  count += response.items.length
-  console.log(`${count} documents saved`);
-  return response
-}
-
-db.changes({
-  since: 'now',
-  live: true,
-  include_docs: true
-})
-.on('change', async function(change) {
-  await bulk([change.doc])
-})
-.on('error', (error) => {
-  console.error(error.stack);
-})
 
 async function all() {
   const limit = 10000
