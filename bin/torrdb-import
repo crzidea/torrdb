@@ -10,7 +10,9 @@ async function all() {
   let since = 0
   let changes
   do {
-    changes = await db.changes({since, limit, include_docs: true})
+    changes = await db.changes({
+      since, limit, batch_size: limit, include_docs: true
+    })
     since = changes.last_seq
     const documents = changes.results.map(result => result.doc)
     await bulk(documents)
