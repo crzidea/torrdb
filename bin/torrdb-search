@@ -14,8 +14,14 @@ async function main() {
         bool: {
           must: [
             {
-              //match_phrase: {
               match: {
+                name: query
+              }
+            }
+          ],
+          should: [
+            {
+              match_phrase: {
                 name: query
               }
             }
