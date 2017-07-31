@@ -3,10 +3,7 @@ const defaults  = require('../lib/defaults.js')
 const bulk      = require('../lib/bulk.js')
 const pouchdb   = require('pouchdb')
 
-const db = pouchdb(
-  'http://torrdb.less.center:5984/torrent',
-  {revs_limit: 1}
-);
+const db = pouchdb(defaults.couchdb, {revs_limit: 1});
 
 db.changes({
   since: 'now',
