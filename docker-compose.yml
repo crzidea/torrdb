@@ -1,5 +1,14 @@
 version: '2'
 services:
+  sync:
+    image: node:alpine
+    entrypoint: /application/bin/torrdb-sync
+    environment:
+      - ELASTICSEARCH_HOST=elasticsearch
+      - COUCHDB=http://couchdb:5984/torrent
+    volumes:
+      - .:/application
+    restart: always
   couchdb:
     image: couchdb
     volumes:
@@ -7,6 +16,7 @@ services:
       - ~/.torrdb/couchdb:/usr/local/var/lib/couchdb
     ports:
       - "5984:5984"
+    restart: always
   elasticsearch:
     image: docker.elastic.co/elasticsearch/elasticsearch:5.5.0
     environment:
@@ -22,10 +32,12 @@ services:
       - esdata:/usr/share/elasticsearch/data
     ports:
       - 9200:9200
+    restart: always
   kibana:
     image: docker.elastic.co/kibana/kibana:5.5.0
     ports:
       - 5601:5601
+    restart: always
 volumes:
   esdata:
     driver: local
