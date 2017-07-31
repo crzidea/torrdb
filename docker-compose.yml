@@ -4,7 +4,7 @@ services:
     image: node:alpine
     entrypoint: /application/bin/torrdb-sync
     environment:
-      - ELASTICSEARCH_HOST=elasticsearch
+      - ELASTICSEARCH_HOST=elasticsearch:9200
       - COUCHDB=http://couchdb:5984/torrent
     volumes:
       - .:/application
