@@ -9,6 +9,16 @@ services:
     volumes:
       - .:/application
     restart: always
+  server:
+    image: node:alpine
+    entrypoint: /application/bin/torrdb-server
+    environment:
+      - ELASTICSEARCH_HOST=elasticsearch:9200
+    volumes:
+      - .:/application
+    restart: always
+    ports:
+      - "3000:3000"
   couchdb:
     image: couchdb
     volumes:

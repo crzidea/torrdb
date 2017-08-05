@@ -9,7 +9,13 @@
   "license": "ISC",
   "dependencies": {
     "elasticsearch": "^13.0.0",
+    "koa": "^2.3.0",
+    "koa2-cors": "^2.0.3",
     "pouchdb": "^6.3.4"
   },
-  "devDependencies": {}
+  "devDependencies": {
+    "mocha": "^3.5.0",
+    "qs": "^6.5.0",
+    "supertest": "^3.0.0"
+  }
 }

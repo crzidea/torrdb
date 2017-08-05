@@ -1,0 +1,26 @@
+#!/usr/bin/env node
+const Koa = require('koa')
+const cors = require('koa2-cors')
+const {index}  = require('../lib/defaults.js')
+const es = require('../lib/elasticsearch.js')
+const type = 'torrent'
+
+const application = new Koa()
+
+application.use(cors())
+
+application.use(async (ctx) => {
+  const buffer = new Buffer(ctx.request.query.q, 'base64')
+  const search = JSON.parse(buffer.toString())
+  const response = await es.search({index, type, body: search})
+  ctx.response.body = response
+  ctx.response.status = 200
+})
+
+if (module.parent) {
+  module.exports = application
+} else {
+  const server = application.listen(process.env.PORT || 3000, () => {
+    console.log(`Listening on port ${server.address().port}`);
+  })
+}
