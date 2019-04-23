@@ -31,13 +31,14 @@ services:
     image: docker.elastic.co/elasticsearch/elasticsearch:5.5.0
     environment:
       - cluster.name=docker-cluster
+      - xpack.security.enabled=false
       - bootstrap.memory_lock=true
-      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+      #- "ES_JAVA_OPTS=-Xms4g -Xmx4g"
     ulimits:
       memlock:
         soft: -1
         hard: -1
-    mem_limit: 2g
+    mem_limit: 8g
     volumes:
       - esdata:/usr/share/elasticsearch/data
     ports:

@@ -10,11 +10,16 @@ const application = new Koa()
 application.use(cors())
 
 application.use(async (ctx) => {
-  const buffer = new Buffer(ctx.request.query.q, 'base64')
-  const search = JSON.parse(buffer.toString())
-  const response = await es.search({index, type, body: search})
-  ctx.response.body = response
-  ctx.response.status = 200
+  try {
+    const buffer = new Buffer(ctx.request.query.q, 'base64')
+    const search = JSON.parse(buffer.toString())
+    const response = await es.search({index, type, body: search})
+    ctx.response.body = response
+    ctx.response.status = 200
+  } catch (e) {
+    ctx.response.body = {message: e.message}
+    ctx.response.status = 500
+  }
 })
 
 if (module.parent) {
