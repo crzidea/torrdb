@@ -3,7 +3,8 @@
   "version": "1.0.0",
   "description": "",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "./bin/torrdb-server"
   },
   "author": "",
   "license": "ISC",
@@ -11,11 +12,11 @@
     "elasticsearch": "^13.0.0",
     "koa": "^2.3.0",
     "koa2-cors": "^2.0.3",
+    "qs": "^6.5.0",
     "pouchdb": "^6.3.4"
   },
   "devDependencies": {
     "mocha": "^3.5.0",
-    "qs": "^6.5.0",
     "supertest": "^3.0.0"
   }
 }
