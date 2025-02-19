@@ -16,7 +16,7 @@
     "pouchdb": "^8.0.1"
   },
   "devDependencies": {
-    "mocha": "^10.2.0",
+    "mocha": "^10.8.2",
     "supertest": "^3.0.0"
   }
 }
