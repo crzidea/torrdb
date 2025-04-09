@@ -10,7 +10,7 @@
   "license": "ISC",
   "dependencies": {
     "elasticsearch": "^16.7.3",
-    "koa": "^2.3.0",
+    "koa": "^2.16.1",
     "koa2-cors": "^2.0.3",
     "qs": "^6.5.3",
     "pouchdb": "^8.0.1"
